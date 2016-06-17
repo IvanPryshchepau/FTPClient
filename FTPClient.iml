@@ -11,7 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="ftp4j-1.7" level="project" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:3.5" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.33" level="project" />
   </component>
