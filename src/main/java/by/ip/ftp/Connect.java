@@ -1,8 +1,8 @@
 package by.ip.ftp;
 
 
-
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
@@ -14,12 +14,15 @@ public class Connect {
 
     static FTPClient client = new FTPClient();
 
-    public static void connection(String host){
+    static String[] fileList;
+
+
+    public static void connection(String host) {
         try {
             client.connect(host);
             System.out.println("Connected to " + host);
-            if (!FTPReply.isPositiveCompletion(client.getReplyCode()))
-            {
+            client.enterLocalPassiveMode();
+            if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
                 client.disconnect();
                 System.err.println("FTP server refused connection.");
                 System.exit(1);
@@ -32,13 +35,27 @@ public class Connect {
 
     }
 
-    public static void logIn(String login, String password){
+    public static void logIn(String login, String password) {
         try {
             client.login(login, password);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Can't log in");
         }
+    }
+
+    public static String[] getList() {
+
+        try {
+            fileList = client.listNames();
+            for (FTPFile f : client.listFiles()) {
+                System.out.println(f.getName()+(f.isDirectory()?"/":""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileList;
     }
 
 }
