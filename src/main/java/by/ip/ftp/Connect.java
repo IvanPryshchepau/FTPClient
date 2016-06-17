@@ -22,6 +22,7 @@ public class Connect {
             client.connect(host);
             System.out.println("Connected to " + host);
             client.enterLocalPassiveMode();
+            client.login("anonymous", "");
             if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
                 client.disconnect();
                 System.err.println("FTP server refused connection.");
@@ -35,21 +36,15 @@ public class Connect {
 
     }
 
-    public static void logIn(String login, String password) {
-        try {
-            client.login(login, password);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Can't log in");
-        }
-    }
 
     public static String[] getList() {
 
         try {
             fileList = client.listNames();
             for (FTPFile f : client.listFiles()) {
-                System.out.println(f.getName()+(f.isDirectory()?"/":""));
+                if(!f.isSymbolicLink()) {
+                    System.out.println(f.getName() + (f.isDirectory() ? "/" : ""));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
