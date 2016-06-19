@@ -5,6 +5,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -12,10 +14,7 @@ import java.io.IOException;
  */
 public class Connect {
 
-    static FTPClient client = new FTPClient();
-
-    static String[] fileList;
-
+    static final FTPClient client = new FTPClient();
 
     public static void connection(String host) {
         try {
@@ -24,7 +23,6 @@ public class Connect {
             client.enterLocalPassiveMode();
             client.login("anonymous", "");
             if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
-                client.disconnect();
                 System.err.println("FTP server refused connection.");
                 System.exit(1);
             }
@@ -36,11 +34,9 @@ public class Connect {
 
     }
 
-
-    public static String[] getList() {
+    public static void getList() {
 
         try {
-            fileList = client.listNames();
             for (FTPFile f : client.listFiles()) {
                 if(!f.isSymbolicLink()) {
                     System.out.println(f.getName() + (f.isDirectory() ? "/" : ""));
@@ -49,8 +45,46 @@ public class Connect {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        return fileList;
+    public static void changeDirectory(String dir) {
+        try {
+            client.changeWorkingDirectory(dir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void downloadFile(String filename, String pathToSave) {
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(pathToSave);
+            client.retrieveFile(filename, fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private static void showServerReply(FTPClient ftpClient) {
+        String[] replies = ftpClient.getReplyStrings();
+        if (replies != null && replies.length > 0) {
+            for (String aReply : replies) {
+                System.out.println("SERVER: " + aReply);
+            }
+        }
     }
 
 }

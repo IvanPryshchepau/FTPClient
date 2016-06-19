@@ -1,14 +1,20 @@
 package by.ip.ftp;
 
+import java.util.Scanner;
+
 /**
  * Created by ivanpryshchepau on 6/16/16.
  */
 public class Main {
 
     public static void main(String[] args) {
-        Connect.connection(args[0]);
 
-        Connect.getList();
+        while (true) {
+            Scanner scannerMenu = new Scanner(System.in);
+            String menu = scannerMenu.nextLine();
+            Command.function(menu.split(" "));
+        }
+
     }
 
 }
