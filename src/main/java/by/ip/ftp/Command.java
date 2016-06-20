@@ -8,10 +8,10 @@ import java.io.IOException;
 public class Command {
 
     public static void function(String[] command) {
-        switch (command[0]) {
+        switch (command[0].trim().toLowerCase()) {
             case "connect": {
                 try {
-                    Connect.connection(command[1]);
+                    Connect.connection(command[1].trim());
                 } catch (ArrayIndexOutOfBoundsException e) {
                     printHelp();
                 }
@@ -25,6 +25,7 @@ public class Command {
                         System.out.println("Disconnected");
                     } else {
                         System.out.println("Connection is not open");
+                        System.err.println("Write 'help' to show commands");
                     }
                 } catch (IOException e) {
                     printHelp();
@@ -51,7 +52,7 @@ public class Command {
             }
             case "dl": {
                 try {
-                    Connect.downloadFile(command[1], command[2]);
+                    Connect.downloadFile(command[1].trim(), command[2].trim());
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Please use command correctly. (dl [filename] [path to save/name])");
                     System.err.println("Write 'help' to show commands");
@@ -61,6 +62,14 @@ public class Command {
             case "status": {
                 try {
                     System.out.println(Connect.client.getStatus());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "curr": {
+                try {
+                    System.out.println("Current directory: " + Connect.client.printWorkingDirectory());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -92,8 +101,9 @@ public class Command {
         System.out.println("Use 'connect' to connect to Server (connect [host])");
         System.out.println("Use 'disconnect' to disconnect from Server");
         System.out.println("Use 'ls' to connect to see directories and files in current directory");
-        System.out.println("Use 'cd' to connect to change current directory (cd [dir]) /absoutePath, 'relativePath'");
-        System.out.println("Use 'dl' to connect to download file (dl [file] [path to save])");
+        System.out.println("Use 'curr' to connect to path of current directory");
+        System.out.println("Use 'cd' to connect to change current directory (cd [dir]) /absoutePath or 'relativePath'");
+        System.out.println("Use 'dl' to connect to download file (dl [file] [path to save/filename])");
         System.out.println("Use 'status' to show server status");
         System.out.println("To close use 'exit'");
     }
