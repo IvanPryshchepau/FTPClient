@@ -7,12 +7,20 @@ import java.io.IOException;
  */
 public class Command {
 
-    public static void function(String[] command) {
-        switch (command[0].trim().toLowerCase()) {
+    private static String swCommands;
+    private static String host;
+
+    public static void function(String[] commands) {
+
+        swCommands = commands[0].trim().toLowerCase();
+
+        switch (swCommands) {
             case "connect": {
                 try {
-                    Connect.connection(command[1].trim());
+                    Connect.connection(commands[1].trim());
                 } catch (ArrayIndexOutOfBoundsException e) {
+                    printHelp();
+                } catch (IOException e) {
                     printHelp();
                 }
                 break;
@@ -33,45 +41,74 @@ public class Command {
                 break;
             }
             case "ls": {
-                if (Connect.client.isConnected()) {
-                    Connect.getList();
-                } else {
-                    System.out.println("Please connect to server");
-                    System.err.println("Write 'help' to show commands");
+                try {
+                    if (Connect.client.isConnected()) {
+                        Connect.getList();
+                    } else {
+                        System.out.println("Please connect to server");
+                        System.err.println("Write 'help' to show commands");
+                    }
+                } catch (IOException e) {
+                    printHelp();
                 }
 
                 break;
             }
             case "cd": {
                 try {
-                    Connect.changeDirectory(command[1]);
+                    if (Connect.client.isConnected()) {
+                        Connect.changeDirectory(commands[1]);
+                    } else {
+                        System.out.println("Please connect to server");
+                        System.err.println("Write 'help' to show commands");
+                    }
                 } catch (ArrayIndexOutOfBoundsException e) {
+                    printHelp();
+                } catch (IOException e) {
                     printHelp();
                 }
                 break;
             }
             case "dl": {
                 try {
-                    Connect.downloadFile(command[1].trim(), command[2].trim());
+                    if (Connect.client.isConnected()) {
+                        Connect.downloadFile(commands[1].trim(), commands[2].trim());
+                    } else {
+                        System.out.println("Please connect to server");
+                        System.err.println("Write 'help' to show commands");
+                    }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Please use command correctly. (dl [filename] [path to save/name])");
+                    System.err.println("Please use commands correctly. (dl [filename] [path to save/name])");
+                    System.err.println("Write 'help' to show commands");
+                } catch (IOException e) {
+                    System.err.println("Please use commands correctly. (dl [filename] [path to save/name])");
                     System.err.println("Write 'help' to show commands");
                 }
                 break;
             }
             case "status": {
                 try {
-                    System.out.println(Connect.client.getStatus());
+                    if (Connect.client.isConnected()) {
+                        System.out.println(Connect.client.getStatus());
+                    } else {
+                        System.out.println("Please connect to server");
+                        System.err.println("Write 'help' to show commands");
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    printHelp();
                 }
                 break;
             }
             case "curr": {
                 try {
-                    System.out.println("Current directory: " + Connect.client.printWorkingDirectory());
+                    if (Connect.client.isConnected()) {
+                        System.out.println("Current directory: " + Connect.client.printWorkingDirectory());
+                    } else {
+                        System.out.println("Please connect to server");
+                        System.err.println("Write 'help' to show commands");
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    printHelp();
                 }
                 break;
             }
@@ -82,9 +119,8 @@ public class Command {
                         Connect.client.disconnect();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    printHelp();
                 }
-
                 System.exit(0);
                 break;
             }
