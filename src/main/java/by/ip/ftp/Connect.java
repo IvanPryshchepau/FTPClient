@@ -24,12 +24,9 @@ public class Connect {
             client.login("anonymous", "");
             if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
                 System.err.println("FTP server refused connection.");
-                System.exit(1);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Could not connect to server.");
-            System.exit(1);
+            System.err.println("Cannot connect to server.");
         }
 
     }
@@ -78,7 +75,7 @@ public class Connect {
 
     }
 
-    private static void showServerReply(FTPClient ftpClient) {
+    public static void showServerReply(FTPClient ftpClient) {
         String[] replies = ftpClient.getReplyStrings();
         if (replies != null && replies.length > 0) {
             for (String aReply : replies) {

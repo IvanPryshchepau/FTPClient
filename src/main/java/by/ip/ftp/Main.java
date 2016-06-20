@@ -1,5 +1,6 @@
 package by.ip.ftp;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -13,6 +14,7 @@ public class Main {
             Scanner scannerMenu = new Scanner(System.in);
             String menu = scannerMenu.nextLine();
             Command.function(menu.split(" "));
+            //Connect.showServerReply(Connect.client);
         }
 
     }
